@@ -1,3 +1,10 @@
+:root {
+    --border-radius: 10px;
+    --box-shadow: 5px 5px;
+    --box-shadow-hover: 7px 7px;
+    --margin-line: 2px solid black;
+}
+
 /**
 * General style
 */
@@ -18,15 +25,20 @@ body {
 */
 .main {
     height: 100%; /* full height */
+    /* flex */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .header-section {
-    height: 9rem;
+    width: 100%;
     margin-bottom: 25px;
 }
 .title {
     text-align: center;
     font-size: 2rem;
-    margin: 20px 0px;
+    margin-bottom: 20px;
+    padding-top: 20px;
 }
 .players {
     height: 60%;
@@ -35,6 +47,9 @@ body {
 }
 .player {
     height: 100%;
+    border: 2px solid black;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     /* grid container */
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -55,6 +70,7 @@ body {
 .icon {
     height: 50px;
     width: 50px;
+    margin-bottom: 15px;
 }
 .icon1 {
     background-color: pink;
@@ -63,6 +79,8 @@ body {
     background-color: cyan;
 }
 .mark {
+    border-left: var(--margin-line);
+    /* flex container */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,4 +117,10 @@ body {
     /* grid item */
     grid-column: 1 / 2;
     grid-row: 1 / 2;
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+    padding-bottom: 20px;
 }
