@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <div class="main no-display">
+    <div class="main">
         <!-- Header section -->
         <section class="header-section">
             <div class="title">
@@ -43,7 +43,6 @@
                 </div>
             </div>
         </section>
-    
         <!-- Board -->
         <section class="board-section">
             <div class="board">
@@ -65,7 +64,7 @@
     </div>
 
     <!-- Select screen -->
-    <div class="select-oponent">
+    <div class="select-oponent no-display">
         <section class="header-section">
             <div class="title">
                 <h1>Choose who you want to play against...</h1>
@@ -88,5 +87,26 @@
             </div>
         </section>
     </div>
+
+    <!-- The Modal -- Announce the Winner -->
+    <div id="my-modal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Close icon -->
+            <span class="close material-symbols-rounded">close</span>
+            <!-- main modal content -->
+            <div class="modal-main">
+                <div class="modal-header">
+                    <span class="material-symbols-rounded size-48">person</span>
+                    <h2>
+                        Person won!
+                    </h2>
+                </div>
+                <div class="modal-btns">
+                    <button class="new-game" id="new-round-btn size-48">Start new round</button>
+                    <button class="restart" id="restart-game-btn">Restart game</button>
+                </div>
+            </div>
+        </div>
 </body>
 </html>

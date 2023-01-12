@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
 
 :root {
+    --color-white: white;
+    --color-black: black;
     --color-green: #8aff80;
     --color-purple: #9580ff;
     --color-pink: #ff80bf;
@@ -27,7 +29,8 @@ body {
     height: 100%; /* full height */
 }
 .main,
-.select-oponent {
+.select-oponent,
+#my-modal {
     font-family: 'Cabin', sans-serif;
 }
 
@@ -165,9 +168,6 @@ footer {
     align-items: center;
     justify-content: center;
 }
-.vs-element button span {
-    margin-right: 10px;
-}
 .vs-element button:hover {
     box-shadow: var(--box-shadow);
 }
@@ -186,7 +186,84 @@ footer {
 }
 span.size-48 {
     font-size: 48px;
-    font-variation-settings: 'OPSZ' 48;
+    margin-right: 10px;
+}
+
+/**
+* MODAL STYLE
+*/
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 200px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: var(--color-green);
+    margin: auto;
+    padding: 20px;
+    border: var(--margin-line);
+    border-radius: 10px;
+    width: 40%;
+    height: 40%;
+}
+.modal-content .modal-main {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.modal-main .modal-header {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+}
+/* .modal-main .modal-header span {
+    margin-right: 10px;
+} */
+.modal-main .modal-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+.modal-content button {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    height: 80px;
+    width: 120px;
+    margin-top: 50px;
+    font-weight: 900;
+    font-size: larger;
+    border-radius: 10px;
+    border: var(--margin-line);
+}
+.modal-content button:hover {
+    box-shadow: var(--box-shadow);
+}
+
+/* The Close Button */
+.close {
+    color: var(--color-black);
+    float: right;
+    font-size: 28px;
+    font-weight: 350;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 
