@@ -2,6 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
 
 :root {
+    --color-green: #8aff80;
+    --color-purple: #9580ff;
+    --color-pink: #ff80bf;
+    --color-yellow: #ffff80;
     --border-radius: 10px;
     --box-shadow: 5px 5px;
     --box-shadow-hover: 7px 7px;
@@ -22,13 +26,17 @@ html,
 body {
     height: 100%; /* full height */
 }
+.main,
+.select-oponent {
+    font-family: 'Cabin', sans-serif;
+}
 
 /**
-* Header section style
+* MAIN SECTION STYLE
 */
+/* Header Section Style */
 .main {
     height: 100%; /* full height */
-    font-family: 'Cabin', sans-serif;
     /* flex */
     display: flex;
     flex-direction: column;
@@ -93,9 +101,7 @@ body {
     font-size: 3rem;
 }
 
-/**
-* Board section style
-*/
+/* Board Section Style */
 .board-section {
     padding: 10px;
     /* grid container */
@@ -123,8 +129,68 @@ body {
     grid-row: 1 / 2;
 }
 
+/* Footer style */
 footer {
     text-align: center;
     margin-top: auto;
     padding-bottom: 20px;
+}
+
+/**
+* SELECT OPONENT SECTION
+*/
+.select-oponent {
+    padding: 50px;
+}
+.vs-options {
+    display: grid;
+    grid-template-rows: 1fr 2fr 1fr 2fr 1fr;
+    gap: 20px;
+    justify-content: center;
+}
+.vs-element {
+    width: 200px;
+    text-align: center;
+}
+.vs-element button {
+    width: 100%;
+    padding: 20px 30px;
+    border: var(--margin-line);
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    /* Flex container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.vs-element button span {
+    margin-right: 10px;
+}
+.vs-element button:hover {
+    box-shadow: var(--box-shadow);
+}
+.vs-human {
+    /* grid item */
+    grid-row: 2;
+}
+.vs-human button {
+    background-color: var(--color-green);
+}
+.vs-ai {
+    grid-row: 4;
+}
+.vs-ai button {
+    background-color: var(--color-yellow);
+}
+span.size-48 {
+    font-size: 48px;
+    font-variation-settings: 'OPSZ' 48;
+}
+
+
+/* Hide the content */
+.no-display {
+    display: none;
 }
