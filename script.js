@@ -68,7 +68,7 @@ const boardStatus = (() => {
     const clear = () => {
         board.innerHTML = '';
         for (let i = 1; i <= 9; i++) {
-            board.innerHTML += `<div onclick="gameStatus.addSymbol(event)" class="cell cell-free" id="cell${i}">
+            board.innerHTML += `<div onclick="boardStatus.addSymbol(event)" class="cell cell-free" id="cell${i}">
                                     <span class="symbol material-symbols-rounded"></span>
                                 </div>`
         }
@@ -82,10 +82,21 @@ const boardStatus = (() => {
         _displayPlayerScore(p1);
         _displayPlayerScore(p2);
     }
+    // Add symbol user when cell clicked
+    const addSymbol = (event) => {
+        console.log(event.target.classList);
+        // When the clicked cell is free
+        if (Array.from(event.target.classList).includes('cell-free')) {
+            event.target.classList.remove('cell-free');
+            // Add current player symbol
+            event.target.innerHTML = '<span class="symbol material-symbols-rounded">favorite</span>'
+        }
+    }
 
     // Public elements
-    return {clear, displayPlayersInfo};
+    return {clear, displayPlayersInfo, addSymbol};
 })();
+
 
 // Handle all the game flow general changes
 const gameStatus = (() => {
@@ -130,20 +141,8 @@ const gameStatus = (() => {
         _displayMainScreen();
     }
 
-    // Add symbol user when cell clicked
-    const addSymbol = (event) => {
-        console.log(event.target.classList);
-
-        // When the clicked cell is free
-        if (Array.from(event.target.classList).includes('cell-free')) {
-            event.target.classList.remove('cell-free');
-            // Add current player symbol
-            event.target.innerHTML = '<span class="symbol material-symbols-rounded">favorite</span>'
-        }
-    }
-
     // Public Elements
-    return {init, addSymbol}; 
+    return {init}; 
 })();
 
 
@@ -151,8 +150,9 @@ const gameStatus = (() => {
  * DOM events
  */
 // get DOM elements
-const vsPlayer = document.getElementById('player-btn');
-const vsAI = document.getElementById('ai-btn');
+const choiceBtn = document.getElementsByClassName('choice-btn');
 
-vsPlayer.addEventListener('click', gameStatus.init);
-vsAI.addEventListener('click', gameStatus.init);
+// Add event listeners to every item
+for (let i = 0; i  < choiceBtn.length; i++){
+    choiceBtn[i].addEventListener('click', gameStatus.init);
+}
