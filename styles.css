@@ -77,6 +77,8 @@ body {
 }
 .icon-player {
     padding: 5px;
+    font-weight: bold;
+    font-size: 1.1rem;
     /* flex container */
     display: flex;
     flex-direction: column;
@@ -86,6 +88,13 @@ body {
     height: 50px;
     width: 50px;
     margin-bottom: 15px;
+    margin-top: 15px;
+    border-radius: var(--border-radius);
+    border: var(--margin-line);
+    /* flex container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .icon1 {
     background-color: pink;
@@ -107,6 +116,7 @@ body {
 /* Board Section Style */
 .board-section {
     padding: 10px;
+    margin-top: 30px;
     /* grid container */
     display: grid;
     grid-template-columns: 1fr;
@@ -114,8 +124,8 @@ body {
 }
 .board {
     background-color: black;
-    height: 500px;
-    width: 500px;
+    height: 450px;
+    width: 450px;
     /* grid item */
     place-self: center;
     /* grid container */
@@ -125,10 +135,24 @@ body {
 }
 .cell {
     background-color: white;
+    cursor: pointer;
+    /* flex container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cell span.symbol {
+    font-size: 7rem;
+    font-weight: 200;
 }
 #cell1 {
     /* grid item */
     grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+#cell2 {
+    /* grid item */
+    grid-column: 2 / 3;
     grid-row: 1 / 2;
 }
 
