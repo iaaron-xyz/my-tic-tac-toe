@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- Styles -->
     <link rel="stylesheet" href="./styles.css">
+    <!-- javascript -->
+    <script src="./script.js" defer></script>
 </head>
 <body>
-    <div class="main">
+    <div class="main no-display" id="main-screen">
         <!-- Header section -->
         <section class="header-section">
             <div class="title">
@@ -84,22 +86,22 @@
     </div>
 
     <!-- Select screen -->
-    <div class="select-oponent no-display">
+    <div class="select-oponent" id="start-screen">
         <section class="header-section">
             <div class="title">
-                <h1>Choose who you want to play against...</h1>
+                <h1>I want to play versus...</h1>
             </div>
         </section>
         <section class="vs-section">
             <div class="vs-options">
                 <div class="vs-element vs-human">
-                    <button type="button">
+                    <button type="button" id="player-btn">
                         <span class="material-symbols-rounded size-48">person</span>
                         Person
                     </button>
                 </div>
                 <div class="vs-element vs-ai">
-                    <button type="button">
+                    <button type="button" id="ai-btn">
                         <span class="material-symbols-rounded size-48">smart_toy</span>
                         AI
                     </button>
