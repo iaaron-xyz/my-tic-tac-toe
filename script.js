@@ -1,12 +1,12 @@
 /**
  * Factory Functions (Constructors)
  */
-const Player = (name, score, symbol, playerNumber) => {
+const Player = (name, score, symbol, playerCode) => {
     // Get name
     const getName = () => name;
     const getScore = () => score;
     const getSymbol = () => symbol;
-    const getPlayerNumber = () => playerNumber;
+    const getplayerCode = () => playerCode;
 
     // Keep track of the score
     const updateScore = x => {
@@ -14,7 +14,7 @@ const Player = (name, score, symbol, playerNumber) => {
     }
 
     // Public elements
-    return {getName, getScore, getSymbol, getPlayerNumber, updateScore};
+    return {getName, getScore, getSymbol, getplayerCode, updateScore};
 }
 
 
@@ -31,41 +31,55 @@ const boardStatus = (() => {
     const playerTwoTag = document.getElementById('player2-tagname');
     const playerTwoScore = document.getElementById('p2-score');
 
+    // Board status array
+    let boardArray = ['', '', '',
+                      '', '', '',
+                      '', '', ''];
+
     // Player board information
     // Player icon
     const _displayPlayerIcon = (player) => {
         console.log(player.getName());
         console.log(player.getSymbol()[0]);
-        if (player.getPlayerNumber() == 1) {
+        if (player.getplayerCode() == 1) {
             playerOneIcon.innerHTML = `<span class="symbol material-symbols-rounded">${player.getSymbol()}</span>`
         }
-        else if (player.getPlayerNumber() == 2) {
+        else {
             playerTwoIcon.innerHTML = `<span class="symbol material-symbols-rounded">${player.getSymbol()}</span>`
         }
 
     }
     // player tagname
     const _displayPlayerTagname = (player) => {
-        if (player.getPlayerNumber() == 1) {
-            playerOneTag.innerHTML = player.getName()
+        if (player.getplayerCode() == 1) {
+            playerOneTag.textContent = player.getName()
         }
-        else if (player.getPlayerNumber() == 2) {
-            playerTwoTag.innerHTML = player.getName()
+        else if (player.getplayerCode() == 2) {
+            playerTwoTag.textContent = player.getName()
+        }
+        else {
+            playerTwoTag.textContent = 'AI';
         }
     }
     // players score
     const _displayPlayerScore = (player) => {
         console.log(player.getScore());
-        if (player.getPlayerNumber() == 1) {
+        if (player.getplayerCode() == 1) {
             playerOneScore.innerHTML = player.getScore();
         }
-        else if (player.getPlayerNumber() == 2) {
+        else {
             playerTwoScore.innerHTML = player.getScore();
         }
     }
 
     // Clear / Reset Board
     const clear = () => {
+        // Clear Board array
+        for (let i = 0; i < boardArray.length; i++) {
+            boardArray[i] = ''; 
+        }
+        console.log(boardArray);
+        // Clear screen
         board.innerHTML = '';
         for (let i = 1; i <= 9; i++) {
             board.innerHTML += `<div onclick="boardStatus.addSymbol(event)" class="cell cell-free" id="cell${i}">
@@ -113,24 +127,43 @@ const gameStatus = (() => {
     }
 
     // Symbols selection
-    const _symbolSelection = () => {
+    const _symbolSelection = (secondPlayer) => {
         // Full list of available symbols
         arr = ['close', 'favorite', 'circle', 'star', 'square', 'sunny', 'bedtime'];
-        // Pick two different symbols
+        // First player symbol
         const symbol1 = arr.splice(Math.floor(Math.random()*arr.length), 1);
-        const symbol2 = arr.splice(Math.floor(Math.random()*arr.length), 1)
+        // Second player symbol
+        if (secondPlayer == 10) {
+            var symbol2 = 'smart_toy';
+        } else {
+            symbol2 = arr.splice(Math.floor(Math.random()*arr.length), 1)
+        }
         // Return those symbol in a list
         return [symbol1, symbol2];
+    }
+    // Check if user choose AI
+    const _vsMachine = (p) => {
+        for (let i = 0; i < p.length; i++)
+        {
+            if (p[i].id == 'ai-btn') {
+                // second player ai code
+                return 10;
+            }
+        }
+        // second player human code
+        return 2;
     }
 
 
     // Start a new game
-    const init = () => {
+    const init = (event) => {
+        // Check if second playe is machine or human
+        const secondPlayerCode = _vsMachine(event.path);
         // Set symbols
-        const symbolsList = _symbolSelection();
+        const symbolsList = _symbolSelection(secondPlayerCode);
         // Set players
         let p1 = Player('Player One', 0, symbolsList[0], 1);
-        let p2 = Player('Player Two', 0, symbolsList[1], 2)
+        let p2 = Player('Player Two', 0, symbolsList[1], secondPlayerCode);
         // Set board
         boardStatus.clear()
 
