@@ -299,3 +299,6 @@ span.size-48 {
 .no-display {
     display: none;
 }
+.cell-winner {
+    background-color: var(--color-green);
+}

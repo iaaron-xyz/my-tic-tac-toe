@@ -6,7 +6,7 @@ const Player = (name, score, symbol, playerCode) => {
   const getName = () => name;
   const getScore = () => score;
   const getSymbol = () => symbol;
-  const getplayerCode = () => playerCode;
+  const getPlayerCode = () => playerCode;
 
   // Keep track of the score
   const updateScore = x => {
@@ -14,7 +14,7 @@ const Player = (name, score, symbol, playerCode) => {
   }
 
   // Public elements
-  return {getName, getScore, getSymbol, getplayerCode, updateScore};
+  return {getName, getScore, getSymbol, getPlayerCode, updateScore};
 }
 
 
@@ -33,17 +33,35 @@ const boardStatus = (() => {
   const playerTwoTag = document.getElementById('player2-tagname');
   const playerTwoScore = document.getElementById('p2-score');
 
-  // Board status array
-  let boardArray = ['', '', '',
-                    '', '', '',
-                    '', '', ''];
+  // Board players record movements
+  let boardPlayer1 = ['', '', '',
+                      '', '', '',
+                      '', '', ''];
+  let boardPlayer2 = ['', '', '',
+                      '', '', '',
+                      '', '', ''];
+  
+  // 
+  const winStates = [
+    // horizontal
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    // vertical
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    // diagonal
+    [1, 5, 9],
+    [3, 5, 7],
+  ]
 
   // Player board information
   // Player icon
   const _displayPlayerIcon = (player) => {
     console.log(player.getName());
     console.log(player.getSymbol()[0]);
-    if (player.getplayerCode() == 1) {
+    if (player.getPlayerCode() == 1) {
       playerOneIcon.innerHTML = `<span class="symbol material-symbols-rounded">${player.getSymbol()}</span>`
     }
     else {
@@ -53,10 +71,10 @@ const boardStatus = (() => {
   }
   // player tagname
   const _displayPlayerTagname = (player) => {
-    if (player.getplayerCode() == 1) {
+    if (player.getPlayerCode() == 1) {
       playerOneTag.textContent = player.getName()
     }
-    else if (player.getplayerCode() == 2) {
+    else if (player.getPlayerCode() == 2) {
       playerTwoTag.textContent = player.getName()
     }
     else {
@@ -66,21 +84,74 @@ const boardStatus = (() => {
   // players score
   const _displayPlayerScore = (player) => {
     console.log(player.getScore());
-    if (player.getplayerCode() == 1) {
+    if (player.getPlayerCode() == 1) {
       playerOneScore.innerHTML = player.getScore();
     }
     else {
       playerTwoScore.innerHTML = player.getScore();
     }
   }
+  // Check if has a winner status
+  const _checkWinner = (player) => {
+    // Check if player 1 has winner states
+    if (player.getPlayerCode() == 1) {
+      // Check every state
+      for (let i = 0; i < winStates.length; i++) {
+        let counter = 0;
+        // Check every element in the state
+        for (let j = 0; j < winStates[0].length; j++) {
+          // increase counter everytime a number in the given state is found
+          if (boardPlayer1.includes(`${winStates[i][j]}`)) {
+            counter++;
+          }
+          // If the 3 elements exist the we have a winner state
+          if (counter == 3) {
+            return [player.getPlayerCode(), winStates[i]];
+          }
+        }
+      }
+    }
+    // Check if player 2 has winner states
+    else {
+      // Check every state
+      for (let i = 0; i < winStates.length; i++) {
+        let counter = 0;
+        // Check every element in the state
+        for (let j = 0; j < winStates[0].length; j++) {
+          // increase counter everytime a number in the given state is found
+          if (boardPlayer2.includes(`${winStates[i][j]}`)) {
+            counter++;
+          }
+          // If the 3 elements exist the we have a winner state
+          if (counter == 3) {
+            return [player.getPlayerCode(), winStates[i]];
+          }
+        }
+      }
+    }
+    return -1;
+  }
+
+  const _declareWinner = (event, player, arr) => {
+    const cells = document.getElementsByClassName('cell');
+
+    // add winner style only to winner cells
+    for (let i = 0; i < cells.length; i++) {
+      if (arr.includes(Number(cells[i].id[4]))) {
+        cells[i].classList.add('cell-winner');
+      }
+    }
+  }
 
   // Clear / Reset Board
   const clear = () => {
     // Clear Board array
-    for (let i = 0; i < boardArray.length; i++) {
-      boardArray[i] = ''; 
+    for (let i = 0; i < boardPlayer1.length; i++) {
+      boardPlayer1[i] = '';
+      boardPlayer2[i] = '';
     }
-    console.log(boardArray);
+    console.log(boardPlayer1);
+    console.log(boardPlayer2);
     // Clear screen
     board.innerHTML = '';
     for (let i = 1; i <= 9; i++) {
@@ -113,14 +184,42 @@ const boardStatus = (() => {
   const addSymbol = (event, player) => {
     // When the clicked cell is free
     if (Array.from(event.target.classList).includes('cell-free')) {
-      event.target.classList.remove('cell-free');
+      console.log('Cell position:', event.target.id[4]);
+      console.log('Player code:', player.getPlayerCode());
+      // Add the symbol position to the current player board
+      if (player.getPlayerCode() == 1) {
+        boardPlayer1[event.target.id[4]-1] = event.target.id[4];
+        console.log(boardPlayer1);
+      }
+      else {
+        boardPlayer2[event.target.id[4]-1] = event.target.id[4];
+        console.log(boardPlayer2);
+      }
       // Add current player symbol
       event.target.innerHTML = `<span class="symbol material-symbols-rounded">${player.getSymbol()}</span>`
+      event.target.classList.remove('cell-free');
+    }
+  }
+  const finishGame = (event, player) => {
+    results = _checkWinner(player);
+    console.log(results);
+    if (results[0] > 0) {
+      console.log("There is a winner!");
+      _declareWinner(event, player, results[1]);
+    }
+    else {
+      console.log("Not winner yet");
     }
   }
 
   // Public elements
-  return {clear, displayPlayersInfo, addSymbol, indicatePlayerTurn};
+  return {
+    clear,
+    displayPlayersInfo,
+    addSymbol,
+    indicatePlayerTurn,
+    finishGame,
+  };
 })();
 
 
@@ -175,6 +274,7 @@ const gameStatus = (() => {
     // second player human code
     return 2;
   }
+
   // Start a new game
   const _init = (event) => {
     // Check if second playe is machine or human
@@ -186,14 +286,12 @@ const gameStatus = (() => {
     let p2 = Player('Player Two', 0, symbolsList[1], secondPlayerCode);
     // Set board
     boardStatus.clear()
-
     // Display Initial User Information
     boardStatus.indicatePlayerTurn(gameStatusVariables.currentGame + gameStatusVariables.currentTurn);
     boardStatus.displayPlayersInfo(p1, p2);
     // Display game screen
     _hideStartScreen();
     _displayMainScreen();
-
     return [p1, p2];
   }
 
@@ -208,15 +306,16 @@ const gameStatus = (() => {
     else if (gameStatusVariables.status == statusOptions[2] && Array.from(event.target.classList).includes('cell-free') ) {
       if (!(gameStatusVariables.currentGame + gameStatusVariables.currentTurn%2)) {
         boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[0]);
-        // boardStatus.indicatePlayerTurn(a%2);
+        boardStatus.finishGame(event, gameStatusVariables.currentPlayers[0]);
       }
       else {
         boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[1]);
-        // boardStatus.indicatePlayerTurn(a%2);
+        boardStatus.finishGame(event, gameStatusVariables.currentPlayers[1]);
       }
       gameStatusVariables.currentTurn += 1;
       // color current player card
       boardStatus.indicatePlayerTurn(gameStatusVariables.currentGame + gameStatusVariables.currentTurn);
+      console.log('Current turn: ', gameStatusVariables.currentTurn);
     }
   }
 
