@@ -82,7 +82,7 @@ const boardStatus = (() => {
     // Clear screen
     board.innerHTML = '';
     for (let i = 1; i <= 9; i++) {
-      board.innerHTML += `<div onclick="boardStatus.addSymbol(event)" class="cell cell-free" id="cell${i}">
+      board.innerHTML += `<div onclick="gameStatus.update(event)" class="cell cell-free" id="cell${i}">
                             <span class="symbol material-symbols-rounded"></span>
                           </div>`
     }
@@ -97,13 +97,13 @@ const boardStatus = (() => {
     _displayPlayerScore(p2);
   }
   // Add symbol user when cell clicked
-  const addSymbol = (event) => {
+  const addSymbol = (event, player) => {
     console.log(event.target.classList);
     // When the clicked cell is free
     if (Array.from(event.target.classList).includes('cell-free')) {
       event.target.classList.remove('cell-free');
       // Add current player symbol
-      event.target.innerHTML = '<span class="symbol material-symbols-rounded">favorite</span>'
+      event.target.innerHTML = `<span class="symbol material-symbols-rounded">${player.getSymbol()}</span>`
     }
   }
 
@@ -117,6 +117,16 @@ const gameStatus = (() => {
   // DOM elements
   const startScreen = document.getElementById('start-screen');
   const mainScreen = document.getElementById('main-screen');
+
+  // Game status options
+  const statusOptions = ['start-new-game', 'start-new-round', 'currently-playing'];
+  // Game initial status variables
+  let gameStatusVariables = {
+    status: statusOptions[0],
+    currentTurn: 0,
+    playerBegins: 1,
+    currentPlayers: [],
+  }
   
   // Screen Display
   const _hideStartScreen = () => {
@@ -153,10 +163,8 @@ const gameStatus = (() => {
     // second player human code
     return 2;
   }
-
-
   // Start a new game
-  const init = (event) => {
+  const _init = (event) => {
     // Check if second playe is machine or human
     const secondPlayerCode = _vsMachine(event.path);
     // Set symbols
@@ -172,10 +180,33 @@ const gameStatus = (() => {
     // Display game screen
     _hideStartScreen();
     _displayMainScreen();
+
+    return [p1, p2];
+  }
+
+  const update = (event) => {
+    console.log(gameStatusVariables);
+    // Start a new game
+    if (gameStatusVariables.status == statusOptions[0]) {
+      gameStatusVariables.currentPlayers = _init(event);
+      gameStatusVariables.status = statusOptions[2];
+    }
+    
+    // Current game updates
+    else if (gameStatusVariables.status == statusOptions[2]) {
+      console.log(gameStatusVariables.currentPlayers[1].getplayerCode())
+      if (!(gameStatusVariables.currentTurn%2)) {
+        boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[0]);
+      }
+      else {
+        boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[1]);
+      }
+      gameStatusVariables.currentTurn += 1;
+    }
   }
 
   // Public Elements
-  return {init}; 
+  return {update}; 
 })();
 
 
@@ -187,5 +218,5 @@ const choiceBtn = document.getElementsByClassName('choice-btn');
 
 // Add event listeners to every item
 for (let i = 0; i  < choiceBtn.length; i++){
-  choiceBtn[i].addEventListener('click', gameStatus.init);
+  choiceBtn[i].addEventListener('click', gameStatus.update);
 }
