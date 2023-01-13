@@ -24,9 +24,11 @@ const Player = (name, score, symbol, playerCode) => {
 const boardStatus = (() => {
   // DOM elements
   let board = document.getElementById('board');
+  const playerOneCard = document.getElementById('player1-card');
   const playerOneIcon = document.getElementById('player1-icon');
   const playerOneTag = document.getElementById('player1-tagname');
   const playerOneScore = document.getElementById('p1-score');
+  const playerTwoCard = document.getElementById('player2-card');
   const playerTwoIcon = document.getElementById('player2-icon');
   const playerTwoTag = document.getElementById('player2-tagname');
   const playerTwoScore = document.getElementById('p2-score');
@@ -87,6 +89,17 @@ const boardStatus = (() => {
                           </div>`
     }
   }
+  // Color player card when its turn
+  const indicatePlayerTurn = (a) => {
+    if (!(a%2)) {
+      playerOneCard.classList.add('current-turn');
+      playerTwoCard.classList.remove('current-turn');
+    }
+    else {
+      playerOneCard.classList.remove('current-turn');
+      playerTwoCard.classList.add('current-turn');
+    }
+  }
   // Display players info status
   const displayPlayersInfo = (p1, p2) => {
     _displayPlayerIcon(p1);
@@ -98,7 +111,6 @@ const boardStatus = (() => {
   }
   // Add symbol user when cell clicked
   const addSymbol = (event, player) => {
-    console.log(event.target.classList);
     // When the clicked cell is free
     if (Array.from(event.target.classList).includes('cell-free')) {
       event.target.classList.remove('cell-free');
@@ -108,7 +120,7 @@ const boardStatus = (() => {
   }
 
   // Public elements
-  return {clear, displayPlayersInfo, addSymbol};
+  return {clear, displayPlayersInfo, addSymbol, indicatePlayerTurn};
 })();
 
 
@@ -124,7 +136,7 @@ const gameStatus = (() => {
   let gameStatusVariables = {
     status: statusOptions[0],
     currentTurn: 0,
-    playerBegins: 1,
+    currentGame: 0,
     currentPlayers: [],
   }
   
@@ -176,6 +188,7 @@ const gameStatus = (() => {
     boardStatus.clear()
 
     // Display Initial User Information
+    boardStatus.indicatePlayerTurn(gameStatusVariables.currentGame + gameStatusVariables.currentTurn);
     boardStatus.displayPlayersInfo(p1, p2);
     // Display game screen
     _hideStartScreen();
@@ -185,23 +198,25 @@ const gameStatus = (() => {
   }
 
   const update = (event) => {
-    console.log(gameStatusVariables);
     // Start a new game
     if (gameStatusVariables.status == statusOptions[0]) {
       gameStatusVariables.currentPlayers = _init(event);
       gameStatusVariables.status = statusOptions[2];
     }
-    
+
     // Current game updates
     else if (gameStatusVariables.status == statusOptions[2]) {
-      console.log(gameStatusVariables.currentPlayers[1].getplayerCode())
-      if (!(gameStatusVariables.currentTurn%2)) {
+      if (!(gameStatusVariables.currentGame + gameStatusVariables.currentTurn%2)) {
         boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[0]);
+        // boardStatus.indicatePlayerTurn(a%2);
       }
       else {
         boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[1]);
+        // boardStatus.indicatePlayerTurn(a%2);
       }
       gameStatusVariables.currentTurn += 1;
+      // color current player card
+      boardStatus.indicatePlayerTurn(gameStatusVariables.currentGame + gameStatusVariables.currentTurn);
     }
   }
 

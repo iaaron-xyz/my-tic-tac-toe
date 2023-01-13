@@ -293,6 +293,9 @@ span.size-48 {
 
 
 /* Hide the content */
+.current-turn {
+    background-color: var(--color-purple);
+}
 .no-display {
     display: none;
 }
