@@ -205,7 +205,7 @@ const gameStatus = (() => {
     }
 
     // Current game updates
-    else if (gameStatusVariables.status == statusOptions[2]) {
+    else if (gameStatusVariables.status == statusOptions[2] && Array.from(event.target.classList).includes('cell-free') ) {
       if (!(gameStatusVariables.currentGame + gameStatusVariables.currentTurn%2)) {
         boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[0]);
         // boardStatus.indicatePlayerTurn(a%2);
