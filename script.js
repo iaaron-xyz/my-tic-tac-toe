@@ -7,12 +7,10 @@ const Player = (name, score, symbol, playerCode) => {
   const getScore = () => score;
   const getSymbol = () => symbol;
   const getPlayerCode = () => playerCode;
-
   // Keep track of the score
-  const updateScore = x => {
+  const updateScore = () => {
     score += 1;
   }
-
   // Public elements
   return {getName, getScore, getSymbol, getPlayerCode, updateScore};
 }
@@ -40,8 +38,7 @@ const boardStatus = (() => {
   let boardPlayer2 = ['', '', '',
                       '', '', '',
                       '', '', ''];
-  
-  // 
+  // Win states
   const winStates = [
     // horizontal
     [1, 2, 3],
@@ -91,7 +88,7 @@ const boardStatus = (() => {
       playerTwoScore.innerHTML = player.getScore();
     }
   }
-  // Check if has a winner status
+  // Check if exist a winner status
   const _checkWinner = (player) => {
     // Check if player 1 has winner states
     if (player.getPlayerCode() == 1) {
@@ -134,7 +131,6 @@ const boardStatus = (() => {
 
   const _declareWinner = (event, player, arr) => {
     const cells = document.getElementsByClassName('cell');
-
     // add winner style only to winner cells
     for (let i = 0; i < cells.length; i++) {
       if (arr.includes(Number(cells[i].id[4]))) {
@@ -204,7 +200,6 @@ const boardStatus = (() => {
     results = _checkWinner(player);
     console.log(results);
     if (results[0] > 0) {
-      console.log("There is a winner!");
       _declareWinner(event, player, results[1]);
     }
     else {
@@ -230,10 +225,10 @@ const gameStatus = (() => {
   const mainScreen = document.getElementById('main-screen');
 
   // Game status options
-  const statusOptions = ['start-new-game', 'start-new-round', 'currently-playing'];
+  const statusOpts = ['start-new-game', 'start-new-round', 'currently-playing'];
   // Game initial status variables
-  let gameStatusVariables = {
-    status: statusOptions[0],
+  let gameVars = {
+    status: statusOpts[0],
     currentTurn: 0,
     currentGame: 0,
     currentPlayers: [],
@@ -262,6 +257,7 @@ const gameStatus = (() => {
     // Return those symbol in a list
     return [symbol1, symbol2];
   }
+
   // Check if user choose AI
   const _vsMachine = (p) => {
     for (let i = 0; i < p.length; i++)
@@ -287,7 +283,7 @@ const gameStatus = (() => {
     // Set board
     boardStatus.clear()
     // Display Initial User Information
-    boardStatus.indicatePlayerTurn(gameStatusVariables.currentGame + gameStatusVariables.currentTurn);
+    boardStatus.indicatePlayerTurn(gameVars.currentGame + gameVars.currentTurn);
     boardStatus.displayPlayersInfo(p1, p2);
     // Display game screen
     _hideStartScreen();
@@ -297,25 +293,24 @@ const gameStatus = (() => {
 
   const update = (event) => {
     // Start a new game
-    if (gameStatusVariables.status == statusOptions[0]) {
-      gameStatusVariables.currentPlayers = _init(event);
-      gameStatusVariables.status = statusOptions[2];
+    if (gameVars.status == statusOpts[0]) {
+      gameVars.currentPlayers = _init(event);
+      gameVars.status = statusOpts[2];
     }
-
+    
     // Current game updates
-    else if (gameStatusVariables.status == statusOptions[2] && Array.from(event.target.classList).includes('cell-free') ) {
-      if (!(gameStatusVariables.currentGame + gameStatusVariables.currentTurn%2)) {
-        boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[0]);
-        boardStatus.finishGame(event, gameStatusVariables.currentPlayers[0]);
+    else if (gameVars.status == statusOpts[2] && Array.from(event.target.classList).includes('cell-free') ) {
+      if (!(gameVars.currentGame + gameVars.currentTurn%2)) {
+        boardStatus.addSymbol(event, gameVars.currentPlayers[0]);
+        boardStatus.finishGame(event, gameVars.currentPlayers[0]);
       }
       else {
-        boardStatus.addSymbol(event, gameStatusVariables.currentPlayers[1]);
-        boardStatus.finishGame(event, gameStatusVariables.currentPlayers[1]);
+        boardStatus.addSymbol(event, gameVars.currentPlayers[1]);
+        boardStatus.finishGame(event, gameVars.currentPlayers[1]);
       }
-      gameStatusVariables.currentTurn += 1;
+      gameVars.currentTurn += 1;
       // color current player card
-      boardStatus.indicatePlayerTurn(gameStatusVariables.currentGame + gameStatusVariables.currentTurn);
-      console.log('Current turn: ', gameStatusVariables.currentTurn);
+      boardStatus.indicatePlayerTurn(gameVars.currentGame + gameVars.currentTurn);
     }
   }
 
