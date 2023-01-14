@@ -85,10 +85,10 @@ const boardStatus = (() => {
   const _displayPlayerScore = (player) => {
     // Display player score
     if (player.getPlayerCode() == 1) {
-      playerOneScore.innerHTML = player.getScore();
+      playerOneScore.textContent = player.getScore();
     }
     else {
-      playerTwoScore.innerHTML = player.getScore();
+      playerTwoScore.textContent = player.getScore();
     }
   }
 
@@ -157,6 +157,9 @@ const boardStatus = (() => {
         cells[i].classList.add('cell-winner');
       }
     }
+    // Update Score
+    player.updateScore();
+    _displayPlayerScore(player);
     // Display the modal
     _displayModal(player);
   }
@@ -245,9 +248,10 @@ const gameStatus = (() => {
   // DOM elements
   const startScreen = document.getElementById('start-screen');
   const mainScreen = document.getElementById('main-screen');
+  const modal = document.getElementById('my-modal');
 
   // Game status options
-  const statusOpts = ['start-new-game', 'start-new-round', 'currently-playing', 'tie', 'winner'];
+  const statusOpts = ['start-new-game', 'currently-playing'];
   // Game initial status variables
   let gameVars = {
     status: statusOpts[0],
@@ -317,24 +321,23 @@ const gameStatus = (() => {
     // Start a new game
     if (gameVars.status == statusOpts[0]) {
       gameVars.currentPlayers = _init(event);
-      gameVars.status = statusOpts[2];
+      gameVars.status = statusOpts[1];
     }
     
     // Current game updates
-    else if (gameVars.status == statusOpts[2] && Array.from(event.target.classList).includes('cell-free') ) {
-      if (!(gameVars.currentGame + gameVars.currentTurn%2)) {
+    else if (gameVars.status == statusOpts[1] && Array.from(event.target.classList).includes('cell-free') ) {
+      if (!((gameVars.currentGame + gameVars.currentTurn)%2)) {
         boardStatus.addSymbol(event, gameVars.currentPlayers[0]);
-        boardStatus.finishGame(gameVars.currentPlayers[0]);
+        boardStatus.finishGame(gameVars.currentPlayers[0], gameVars.currentTurn);
       }
       else {
         boardStatus.addSymbol(event, gameVars.currentPlayers[1]);
-        boardStatus.finishGame(gameVars.currentPlayers[1]);
+        boardStatus.finishGame(gameVars.currentPlayers[1], gameVars.currentTurn);
       }
       gameVars.currentTurn += 1;
 
       // After 9 movements without a winner is a tie
-      if (gameVars.currentTurn == 9 && gameVars.status != statusOpts[4]) {
-        gameVars.status = statusOpts[3];
+      if (gameVars.currentTurn == 9) {
         boardStatus.finishGame(false, gameVars.currentTurn);
       }
       // color current player card
@@ -342,8 +345,32 @@ const gameStatus = (() => {
     }
   }
 
+  const startNewRound = () => {
+    // Just clear the board
+    boardStatus.clear();
+    // Restart number turns
+    gameVars.currentTurn = 0;
+    // Increase the number of games
+    gameVars.currentGame++;
+    // Hide the modal
+    modal.style.display = 'none';
+  }
+
+  const restartGame = (event) => {
+    // Restart status
+    gameVars.status = statusOpts[0];
+    // Restart number turns
+    gameVars.currentTurn = 0;
+    // Restart the number of games
+    gameVars.currentGame = 0;
+    // restart board
+    update(event);
+    // Hide the modal
+    modal.style.display = 'none';
+  }
+
   // Public Elements
-  return {update}; 
+  return {update, restartGame, startNewRound}; 
 })();
 
 
@@ -352,8 +379,13 @@ const gameStatus = (() => {
  */
 // get DOM elements
 const choiceBtn = document.getElementsByClassName('choice-btn');
+const newRoundBtn = document.getElementById('new-round-btn');
+const restartGame = document.getElementById('restart-game-btn');
 
 // Add event listeners to every item
 for (let i = 0; i  < choiceBtn.length; i++){
   choiceBtn[i].addEventListener('click', gameStatus.update);
 }
+// Modal Buttons
+newRoundBtn.addEventListener('click', gameStatus.startNewRound);
+restartGame.addEventListener('click', gameStatus.restartGame);
