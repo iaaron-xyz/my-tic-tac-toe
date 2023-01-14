@@ -30,6 +30,9 @@ const boardStatus = (() => {
   const playerTwoIcon = document.getElementById('player2-icon');
   const playerTwoTag = document.getElementById('player2-tagname');
   const playerTwoScore = document.getElementById('p2-score');
+  const modal = document.getElementById('my-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalIcon = document.getElementById('modal-icon');
 
   // Board players record movements
   let boardPlayer1 = ['', '', '',
@@ -80,7 +83,7 @@ const boardStatus = (() => {
   }
   // players score
   const _displayPlayerScore = (player) => {
-    console.log(player.getScore());
+    // Display player score
     if (player.getPlayerCode() == 1) {
       playerOneScore.innerHTML = player.getScore();
     }
@@ -88,6 +91,14 @@ const boardStatus = (() => {
       playerTwoScore.innerHTML = player.getScore();
     }
   }
+
+  // Display modal with round results
+  const _displayModal = (player) => {
+    modalIcon.textContent = `${player.getSymbol()}`;
+    modalTitle.textContent = `${player.getName()} Wins!`;
+    modal.style.display = 'block';
+  }
+
   // Check if exist a winner status
   const _checkWinner = (player) => {
     // Check if player 1 has winner states
@@ -129,14 +140,16 @@ const boardStatus = (() => {
     return -1;
   }
 
-  const _declareWinner = (event, player, arr) => {
+  const _declareWinner = (player, arrWinCells) => {
     const cells = document.getElementsByClassName('cell');
     // add winner style only to winner cells
     for (let i = 0; i < cells.length; i++) {
-      if (arr.includes(Number(cells[i].id[4]))) {
+      if (arrWinCells.includes(Number(cells[i].id[4]))) {
         cells[i].classList.add('cell-winner');
       }
     }
+    // Display the modal
+    _displayModal(player);
   }
 
   // Clear / Reset Board
@@ -146,8 +159,7 @@ const boardStatus = (() => {
       boardPlayer1[i] = '';
       boardPlayer2[i] = '';
     }
-    console.log(boardPlayer1);
-    console.log(boardPlayer2);
+
     // Clear screen
     board.innerHTML = '';
     for (let i = 1; i <= 9; i++) {
@@ -180,8 +192,6 @@ const boardStatus = (() => {
   const addSymbol = (event, player) => {
     // When the clicked cell is free
     if (Array.from(event.target.classList).includes('cell-free')) {
-      console.log('Cell position:', event.target.id[4]);
-      console.log('Player code:', player.getPlayerCode());
       // Add the symbol position to the current player board
       if (player.getPlayerCode() == 1) {
         boardPlayer1[event.target.id[4]-1] = event.target.id[4];
@@ -196,11 +206,11 @@ const boardStatus = (() => {
       event.target.classList.remove('cell-free');
     }
   }
-  const finishGame = (event, player) => {
+  const finishGame = (player) => {
     results = _checkWinner(player);
     console.log(results);
     if (results[0] > 0) {
-      _declareWinner(event, player, results[1]);
+      _declareWinner(player, results[1]);
     }
     else {
       console.log("Not winner yet");
@@ -225,7 +235,7 @@ const gameStatus = (() => {
   const mainScreen = document.getElementById('main-screen');
 
   // Game status options
-  const statusOpts = ['start-new-game', 'start-new-round', 'currently-playing'];
+  const statusOpts = ['start-new-game', 'start-new-round', 'currently-playing', 'tie', 'winner'];
   // Game initial status variables
   let gameVars = {
     status: statusOpts[0],
@@ -302,13 +312,18 @@ const gameStatus = (() => {
     else if (gameVars.status == statusOpts[2] && Array.from(event.target.classList).includes('cell-free') ) {
       if (!(gameVars.currentGame + gameVars.currentTurn%2)) {
         boardStatus.addSymbol(event, gameVars.currentPlayers[0]);
-        boardStatus.finishGame(event, gameVars.currentPlayers[0]);
+        boardStatus.finishGame(gameVars.currentPlayers[0]);
       }
       else {
         boardStatus.addSymbol(event, gameVars.currentPlayers[1]);
-        boardStatus.finishGame(event, gameVars.currentPlayers[1]);
+        boardStatus.finishGame(gameVars.currentPlayers[1]);
       }
       gameVars.currentTurn += 1;
+
+      // After 9 movements without a winner is a tie
+      if (gameVars.currentTurn == 9 && gameVars.status != statusOpts[4]) {
+        gameVars.status = statusOpts[3];
+      }
       // color current player card
       boardStatus.indicatePlayerTurn(gameVars.currentGame + gameVars.currentTurn);
     }
