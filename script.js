@@ -94,13 +94,22 @@ const boardStatus = (() => {
 
   // Display modal with round results
   const _displayModal = (player) => {
-    modalIcon.textContent = `${player.getSymbol()}`;
-    modalTitle.textContent = `${player.getName()} Wins!`;
+    if (player) {
+      modalIcon.textContent = `${player.getSymbol()}`;
+      modalTitle.textContent = `${player.getName()} Wins!`;
+    }
+    else {
+      modalIcon.textContent = '';
+      modalTitle.textContent = 'Is a Tie!';
+    }
     modal.style.display = 'block';
   }
 
   // Check if exist a winner status
   const _checkWinner = (player) => {
+    if (!player) {
+      return [-1];
+    }
     // Check if player 1 has winner states
     if (player.getPlayerCode() == 1) {
       // Check every state
@@ -137,7 +146,7 @@ const boardStatus = (() => {
         }
       }
     }
-    return -1;
+    return [-2];
   }
 
   const _declareWinner = (player, arrWinCells) => {
@@ -206,11 +215,14 @@ const boardStatus = (() => {
       event.target.classList.remove('cell-free');
     }
   }
-  const finishGame = (player) => {
+  const finishGame = (player, turn) => {
     results = _checkWinner(player);
     console.log(results);
-    if (results[0] > 0) {
+    if (results[0] > 0 && turn < 9) {
       _declareWinner(player, results[1]);
+    }
+    else if (turn == 9 && !player) {
+      _displayModal(player);
     }
     else {
       console.log("Not winner yet");
@@ -323,6 +335,7 @@ const gameStatus = (() => {
       // After 9 movements without a winner is a tie
       if (gameVars.currentTurn == 9 && gameVars.status != statusOpts[4]) {
         gameVars.status = statusOpts[3];
+        boardStatus.finishGame(false, gameVars.currentTurn);
       }
       // color current player card
       boardStatus.indicatePlayerTurn(gameVars.currentGame + gameVars.currentTurn);
