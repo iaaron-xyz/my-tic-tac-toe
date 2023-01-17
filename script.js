@@ -275,32 +275,21 @@ const gameStatus = (() => {
     // First player symbol
     const symbol1 = arr.splice(Math.floor(Math.random()*arr.length), 1);
     // Second player symbol
-    if (secondPlayer == 10) {
-        var symbol2 = 'smart_toy';
+    if (secondPlayer == 3) {
+      // Robot symbol
+      var symbol2 = 'smart_toy';
     } else {
-        symbol2 = arr.splice(Math.floor(Math.random()*arr.length), 1)
+      // Second Player Human Symbol
+      symbol2 = arr.splice(Math.floor(Math.random()*arr.length), 1)
     }
     // Return those symbol in a list
     return [symbol1, symbol2];
   }
 
-  // Check if user choose AI
-  const _vsMachine = (p) => {
-    for (let i = 0; i < p.length; i++)
-    {
-      if (p[i].id == 'ai-btn') {
-        // second player ai code
-        return 10;
-      }
-    }
-    // second player human code
-    return 2;
-  }
-
   // Start a new game
   const _init = (event) => {
-    // Check if second playe is machine or human
-    const secondPlayerCode = _vsMachine(event.path);
+    // Check if second playe is machine (3) or human (2)
+    const secondPlayerCode = event.target.id == 'ai-btn' ? 3 : 2;
     // Set symbols
     const symbolsList = _symbolSelection(secondPlayerCode);
     // Set players
@@ -335,7 +324,6 @@ const gameStatus = (() => {
         boardStatus.finishGame(gameVars.currentPlayers[1], gameVars.currentTurn);
       }
       gameVars.currentTurn += 1;
-
       // After 9 movements without a winner is a tie
       if (gameVars.currentTurn == 9) {
         boardStatus.finishGame(false, gameVars.currentTurn);
@@ -372,7 +360,6 @@ const gameStatus = (() => {
   // Public Elements
   return {update, restartGame, startNewRound}; 
 })();
-
 
 /**
  * DOM events
